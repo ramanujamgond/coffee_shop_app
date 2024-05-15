@@ -1,4 +1,4 @@
-import { FlatList, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Dimensions, FlatList, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useStore } from '../store/store';
 import { useRef, useState } from 'react';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
@@ -30,7 +30,7 @@ const getCoffeeList = (category: string, data: any) => {
     }
 }
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }: any) => {
     const CoffeeList = useStore((state: any) => state.CoffeeList);
     const BeanList = useStore((state: any) => state.BeanList);
     const [categories, setCategories] = useState(getCategoriesFromData(CoffeeList));
@@ -94,7 +94,10 @@ const HomeScreen = () => {
                     </TouchableOpacity>
                     <TextInput
                         placeholder='Find your Coffee...' value={searchText}
-                        onChangeText={text => setSearchText(text)}
+                        onChangeText={text => {
+                            setSearchText(text);
+                            searchCoffee(text);
+                        }}
                         placeholderTextColor={COLORS.primaryLightGreyHex}
                         style={styles.TextInputContainer}
                     />
@@ -141,13 +144,24 @@ const HomeScreen = () => {
                 <FlatList
                     ref={ListRef}
                     horizontal
+                    ListEmptyComponent={
+                        <View style={styles.EmptyListContainer}>
+                            <Text style={styles.CategoryText}>No Coffee Availbale</Text>
+                        </View>
+                    }
                     showsHorizontalScrollIndicator={false}
                     data={sortedCoffee}
                     contentContainerStyle={styles.FlatListContainer}
                     keyExtractor={item => item.id}
                     renderItem={({ item }) => {
                         return (
-                            <TouchableOpacity onPress={() => { }}>
+                            <TouchableOpacity onPress={() => {
+                                navigation.push('Details', {
+                                    index: item.index,
+                                    id: item.id,
+                                    type: item.type,
+                                });
+                            }}>
                                 <CoffeeCard
                                     id={item.id}
                                     index={item.index}
@@ -169,7 +183,6 @@ const HomeScreen = () => {
 
                 {/* Bean Flatlist */}
                 <FlatList
-
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     data={BeanList}
@@ -180,7 +193,13 @@ const HomeScreen = () => {
                     keyExtractor={item => item.id}
                     renderItem={({ item }) => {
                         return (
-                            <TouchableOpacity onPress={() => { }}>
+                            <TouchableOpacity onPress={() => {
+                                navigation.push('Details', {
+                                    index: item.index,
+                                    id: item.id,
+                                    type: item.type,
+                                });
+                            }}>
                                 <CoffeeCard
                                     id={item.id}
                                     index={item.index}
@@ -266,6 +285,12 @@ const styles = StyleSheet.create({
         marginTop: SPACING.space_20,
         fontFamily: FONTFAMILY.poppins_medium,
         color: COLORS.secondaryLightGreyHex,
+    },
+    EmptyListContainer: {
+        width: Dimensions.get('window').width - SPACING.space_30 * 2,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: SPACING.space_36 * 3.6,
     },
 })
 export default HomeScreen;
