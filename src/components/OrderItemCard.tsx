@@ -71,6 +71,9 @@ const OrderItemCard: React.FC<OrderItemCardProps> = ({
 
           <View style={styles.CardTableRow}>
             <Text style={styles.CardQuantityPriceText}>
+              X <Text style={styles.Price}>{data.quantity}</Text>
+            </Text>
+            <Text style={styles.CardQuantityPriceText}>
               $ {(data.quantity * data.price).toFixed(2).toString()}
             </Text>
           </View>
@@ -151,9 +154,21 @@ const styles = StyleSheet.create({
     borderLeftWidth: 1,
     borderLeftColor: COLORS.primaryGreyHex,
   },
-  PriceCurrency: {},
-  Price: {},
-  CardQuantityPriceText: {},
+  PriceCurrency: {
+    fontFamily: FONTFAMILY.poppins_semibold,
+    fontSize: FONTSIZE.size_18,
+    color: COLORS.primaryOrangeHex,
+  },
+  Price: {
+    color: COLORS.primaryWhiteHex,
+  },
+  CardQuantityPriceText: {
+    flex: 1,
+    textAlign: 'center',
+    fontFamily: FONTFAMILY.poppins_semibold,
+    fontSize: FONTSIZE.size_18,
+    color: COLORS.primaryOrangeHex,
+  },
 });
 
 export default OrderItemCard;
